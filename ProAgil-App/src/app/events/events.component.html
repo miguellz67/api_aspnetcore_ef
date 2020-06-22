@@ -1,5 +1,6 @@
-<h2 class="mb-3 text-danger font-weight-light">Disponiveis</h2>
+
 <form class="form-inline" action="">
+  <h2 class="mb-3 mr-3 text-danger font-weight-light">Disponiveis</h2>
   <div class="form-group mb-2">
     <input type="text" class="form-control form-control-sm mr-2" placeholder="Evento">
     <button class="btn btn-sm btn-outline-primary">Buscar</button>
@@ -10,6 +11,7 @@
   <thead class="thead-light">
     <tr>
       <th>#</th>
+      <th><button (click)="changeImage()" class="btn btn-sm btn-outline-dark">Imagem</button></th>
       <th>Tema</th>
       <th>Local</th>
       <th>Data</th>
@@ -18,9 +20,12 @@
       <th>Opções</th>
     </tr>
   </thead>
-  <tbody *ngIf="events && events.length > 0">
+  <tbody *ngIf="events && events.length">
     <tr *ngFor="let event of events">
       <td>{{event.eventId}}</td>
+      <td>
+        <img *ngIf="showImage" src="http://localhost:5000/img/{{event.imgUrl}}" [style.width.px]="imageWidth" [style.margin.px]="imageMargin" >
+      </td>
       <td>{{event.theme}}</td>
       <td>{{event.location}}</td>
       <td>{{event.date}}</td>
