@@ -10,5 +10,6 @@ namespace ProAgil.WebApi
         public string Theme { get; set; }
         public int Peoples { get; set; }
         public string Lot { get; set; }
+        public string imgUrl{ get; set; }
     }
 }

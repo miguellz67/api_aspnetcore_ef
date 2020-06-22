@@ -28,6 +28,8 @@ speed-measure-plugin*.json
 *.launch
 .settings/
 *.sublime-workspace
+ProAgil.WebApi/ProAgil.db-shm
+ProAgil.WebApi/ProAgil.db-wal
 
 # IDE - VSCode
 .vscode/*
