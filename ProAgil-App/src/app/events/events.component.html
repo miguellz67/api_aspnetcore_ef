@@ -1,11 +1,11 @@
 
-<form class="form-inline" action="">
+<div class="form-inline" action="">
   <h2 class="mb-3 mr-3 text-danger font-weight-light">Disponiveis</h2>
   <div class="form-group mb-2">
-    <input type="text" class="form-control form-control-sm mr-2" placeholder="Evento">
-    <button class="btn btn-sm btn-outline-primary">Buscar</button>
+    <input type="text" class="form-control form-control-sm mr-2" placeholder="Evento" [(ngModel)]='listFilter'>
   </div>
-</form>
+</div>
+<h4 class="font-weight-light">Filtro: {{listFilter}}</h4>
 
 <table class="table table-striped">
   <thead class="thead-light">
@@ -20,8 +20,8 @@
       <th>Opções</th>
     </tr>
   </thead>
-  <tbody *ngIf="events && events.length">
-    <tr *ngFor="let event of events">
+  <tbody *ngIf="events && events.length;">
+    <tr *ngFor="let event of events | filter:listFilter">
       <td>{{event.eventId}}</td>
       <td>
         <img *ngIf="showImage" src="http://localhost:5000/img/{{event.imgUrl}}" [style.width.px]="imageWidth" [style.margin.px]="imageMargin" >
@@ -30,7 +30,7 @@
       <td>{{event.location}}</td>
       <td>{{event.date}}</td>
       <td>{{event.peoples}}</td>
-      <td>{{event.lot}}</td>
+      <td>{{event.lot | uppercase}}</td>
       <td>
         <button class="btn btn-success mr-1"></button>
         <button class="btn btn-danger"></button>
