@@ -7,11 +7,21 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./events.component.css']
 })
 export class EventsComponent implements OnInit {
+// tslint:disable-next-line: variable-name
+  _listFilter: string;
+  get listFilter(){
+    return this._listFilter;
+  }
+  set listFilter(value: string){
+    this._listFilter = value;
+  }
+
 
   events: any = [];
   imageWidth = 60;
   imageMargin = 2;
   showImage = false;
+
 
   constructor(private http: HttpClient) { }
 
@@ -25,7 +35,6 @@ export class EventsComponent implements OnInit {
 
   getEvents(){
     this.events = this.http.get('http://localhost:5000/api/events').subscribe(res => {
-      console.log(res);
       this.events = res;
     }, error => {
       console.log(error);
