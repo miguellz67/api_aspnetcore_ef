@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProAgil.WebApi.Data;
+using ProAgil.Repository;
 
 
 namespace ProAgil.WebApi.Controllers
