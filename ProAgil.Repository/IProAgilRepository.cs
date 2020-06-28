@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProAgil.Repository
 {
-    interface IProAgilRepository
+    public interface IProAgilRepository
     {
         // General
         void Add<T>(T entity) where T : class;

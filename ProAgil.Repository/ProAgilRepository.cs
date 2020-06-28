@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ProAgil.Repository
 {
-    class ProAgilRepository : IProAgilRepository
+    public class ProAgilRepository : IProAgilRepository
     {
         private readonly DataContext _context;
         public ProAgilRepository(DataContext context)
@@ -50,7 +50,7 @@ namespace ProAgil.Repository
 
             query = query.OrderByDescending(c => c.Date).Where(c => c.Id == EventId);
 
-            return await query.FirstOrDefaultAsync();
+            return await query.AsNoTracking().FirstOrDefaultAsync();
         }
 
         public async Task<Event[]> GetEventsAsync(bool includeSpeakers = false)
@@ -64,7 +64,7 @@ namespace ProAgil.Repository
 
             query = query.OrderByDescending(c => c.Date);
 
-            return await query.ToArrayAsync();
+            return await query.AsNoTracking().ToArrayAsync();
         }
 
         public async Task<Event[]> GetEventsAsyncByTheme(string theme, bool includeSpeakers = false)
@@ -78,7 +78,7 @@ namespace ProAgil.Repository
 
             query = query.OrderByDescending(c => c.Date).Where(c => c.Theme.ToLower().Contains(theme.ToLower()));
 
-            return await query.ToArrayAsync();
+            return await query.AsNoTracking().ToArrayAsync();
         }
 
         // Speakers
@@ -93,7 +93,7 @@ namespace ProAgil.Repository
 
             query = query.OrderBy(c => c.Name).Where(c => c.Id == SpeakerId);
 
-            return await query.FirstOrDefaultAsync();
+            return await query.AsNoTracking().FirstOrDefaultAsync();
         }
 
         public async Task<Speaker[]> GetSpeakersAsync(bool includeEvents)
@@ -107,7 +107,7 @@ namespace ProAgil.Repository
 
             query = query.OrderBy(c => c.Name);
 
-            return await query.ToArrayAsync();
+            return await query.AsNoTracking().ToArrayAsync();
         }
 
         
