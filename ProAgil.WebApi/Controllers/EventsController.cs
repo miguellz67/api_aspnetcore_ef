@@ -1,60 +1,125 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using ProAgil.Domain;
 using ProAgil.Repository;
-
 
 namespace ProAgil.WebApi.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class EventsController : ControllerBase
     {
-        private readonly DataContext _context;
-        public EventsController(DataContext context)
+        private readonly IProAgilRepository _repository;
+        public EventsController(IProAgilRepository repository)
         {
-            _context = context;
+            this._repository = repository;
         }
-    
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetEvents()
         {
             try
             {
-                var eves = await _context.Events.ToListAsync();
-                return Ok(eves);
+                var events = await _repository.GetEventsAsync(true);
+                return Ok(events);
             }
             catch (Exception)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "An error has ocurred on server");
+                return this.StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetEvent(int? id)
+        [HttpGet("getByTheme/{theme}")]
+        public async Task<IActionResult> GetEventsByTheme(string theme)
         {
             try
             {
-                if (id == null)
+                var result = await _repository.GetEventsAsyncByTheme(theme, true);
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet("{EventId:int}")]
+        public async Task<IActionResult> GetEvent(int EventId)
+        {
+            try
+            {
+                var result = await _repository.GetEventAsync(EventId, true);
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostEvent(Event model)
+        {
+            try
+            {
+                _repository.Add(model);
+
+                if(await _repository.SaveChangesAsync())
                 {
-                    return this.StatusCode(StatusCodes.Status400BadRequest);
+                    return Created($"/api/events/{model.Id}", model);
                 }
-                
-                var eve = await _context.Events.FindAsync(id);
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPut("{EventId:int}")]
+        public async Task<IActionResult> PutEvent(int EventId, Event model)
+        {
+            try
+            {
+                var eve = await _repository.GetEventAsync(EventId, false);
                 
                 if(eve == null)
                 {
                     return NotFound();
                 }
-                
-                return Ok(eve);
+
+                _repository.Update(model);
+
+                return Created($"/api/events/{model.Id}", model);
             }
             catch (Exception)
             {
-               return this.StatusCode(StatusCodes.Status500InternalServerError, "An error has ocurred on server");
+                return this.StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpDelete("{EventId:int}")]
+        public async Task<IActionResult> DeleteEvent(int EventId)
+        {
+            try
+            {
+                var eve = await _repository.GetEventAsync(EventId, false);
+
+                if (eve == null) return NotFound();
+
+                _repository.Delete(eve);
+
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
     }
