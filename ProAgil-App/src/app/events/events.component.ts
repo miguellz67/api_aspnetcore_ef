@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, TemplateRef } from '@angular/core';
+import { EventService } from './../_services/event.service';
+import { Event } from './../_models/Event';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-events',
@@ -7,8 +9,20 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./events.component.css']
 })
 export class EventsComponent implements OnInit {
-// tslint:disable-next-line: variable-name
+  events: any = [];
+  imageWidth = 60;
+  imageMargin = 2;
+  showImage = false;
+  modalRef: BsModalRef;
+
+  // tslint:disable-next-line: variable-name
   _listFilter: string;
+
+  constructor(
+    private eventService: EventService,
+    private modalService: BsModalService
+    ) { }
+
   get listFilter(){
     return this._listFilter;
   }
@@ -16,14 +30,9 @@ export class EventsComponent implements OnInit {
     this._listFilter = value;
   }
 
-
-  events: any = [];
-  imageWidth = 60;
-  imageMargin = 2;
-  showImage = false;
-
-
-  constructor(private http: HttpClient) { }
+  openModal(template: TemplateRef<any>){
+    this.modalRef = this.modalService.show(template);
+  }
 
   ngOnInit() {
     this.getEvents();
@@ -34,8 +43,8 @@ export class EventsComponent implements OnInit {
   }
 
   getEvents(){
-    this.events = this.http.get('http://localhost:5000/api/events').subscribe(res => {
-      this.events = res;
+    this.eventService.getEvents().subscribe((events: Event[]) => {
+      this.events = events;
     }, error => {
       console.log(error);
     });

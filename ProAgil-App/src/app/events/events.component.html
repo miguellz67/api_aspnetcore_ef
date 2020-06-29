@@ -1,17 +1,17 @@
-
 <div class="form-inline" action="">
-  <h2 class="mb-3 mr-3 text-danger font-weight-light">Disponiveis</h2>
+  <h4 class="mb-3 mr-3 text-danger font-weight-light">Disponiveis</h4>
   <div class="form-group mb-2">
     <input type="text" class="form-control form-control-sm mr-2" placeholder="Evento" [(ngModel)]='listFilter'>
   </div>
 </div>
-<h4 class="font-weight-light">Filtro: {{listFilter}}</h4>
+<h5 class="font-weight-light">Filtro: {{listFilter}}</h5>
 
 <table class="table table-striped">
   <thead class="thead-light">
     <tr>
       <th>#</th>
-      <th><button (click)="changeImage()" class="btn btn-sm btn-outline-dark">Imagem</button></th>
+      <th><button (click)="changeImage()" class="btn btn-sm btn-outline-dark">
+        <i class="{{showImage ? 'fa fa-eye-slash' : 'fa fa-eye'}}"></i></button></th>
       <th>Tema</th>
       <th>Local</th>
       <th>Data</th>
@@ -22,18 +22,32 @@
   </thead>
   <tbody *ngIf="events && events.length;">
     <tr *ngFor="let event of events | filter:listFilter">
-      <td>{{event.eventId}}</td>
+      <td>{{event.id}}</td>
       <td>
-        <img *ngIf="showImage" src="http://localhost:5000/img/{{event.imgUrl}}" [style.width.px]="imageWidth" [style.margin.px]="imageMargin" >
+        <img *ngIf="showImage" src="http://localhost:5000/img/{{event.imgURL}}" [style.width.px]="imageWidth" [style.margin.px]="imageMargin" >
       </td>
       <td>{{event.theme}}</td>
       <td>{{event.location}}</td>
-      <td>{{event.date}}</td>
+      <td>{{event.date | DateTimeFormat}}</td>
       <td>{{event.peoples}}</td>
-      <td>{{event.lot | uppercase}}</td>
       <td>
-        <button class="btn btn-success mr-1"></button>
-        <button class="btn btn-danger"></button>
+          <div *ngIf="!event.lots.length">
+            Não disponível
+          </div>
+          <div *ngIf="event.lots.length">
+            {{event.lots[0].name | uppercase}}  
+          </div>
+      </td>
+      
+      <td>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-primary mr-1" tooltip="Editar" (click)="openModal(template)">
+            <i class="fa fa-edit"></i>
+          </button>
+          <button class="btn btn-sm btn-danger" tooltip="Exluir">
+            <i class="fa fa-eraser"></i>
+          </button>
+        </div>
       </td>
     </tr>
   </tbody>
@@ -45,3 +59,16 @@
     </tr>
   </tfoot>
 </table>
+
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Modal</h4>
+    <button type="button" class="close pull-right" 
+    aria-label="Close" (click)="modalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  This is a modal.
+</div>
+</ng-template>
